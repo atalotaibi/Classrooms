@@ -6,11 +6,58 @@
     Classroom Details
   </div>
   <div class="card-body">
-    <h5 class="card-title" style="color: 000034;">{{classroom.name}} {{classroom.subject}}</h5>
+    <h5 class="card-title" style="color: 000034;">{{classroom.teacher}} {{classroom.name}} {{classroom.subject}}</h5>
     <p class="card-text" style="color: 000034;">{{classroom.year}}</p>
-    <a href="{% url 'classroom-update' classroom.id %}" class="btn" style="background-color: #000034; color: white;">Update</a>
-    <a href="{% url 'classroom-delete' classroom.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Delete</a>
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'classroom-update' classroom.id %}" class="btn" style="background-color: #000034; color: white;">Update</a>
+      <a href="{% url 'classroom-delete' classroom.id %}" class="btn" style="background-color: #FFA500; color: #000034;">Delete</a>
+      {% if request.user == classroom.teacher %}
+        <a href="{% url 'add-student' classroom.id %}" class="btn btn-primary">Add Student</a>
+      {% endif %}
+    {% endif %}
   </div>
 </div>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Handle</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+      <tr>
+        <th scope="row">#</th>
+        <td>{{student.name}}</td>
+        <td>{{student.date_of_birth}}</td>
+        <td>{{student.exam_grade}}</td>
+        <td>{{student.gender}}</td>
+        {% if request.user == classroom.teacher %}
+        <td><a href="{% url 'student-update' student.pk %}" class="btn btn-info" >Update</a></td>
+        <td><a href="{% url 'student-delete' student.pk %}" class="btn btn-danger" >Delete</a></td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+<!-- <div>
+    <ul class="list-group list-group-flush">
+        {% for student in classroom.students.all %}
+          <li class="list-group-item">
+            <p>{{student.name}}</p>
+            <p>{{student.date_of_birth}}</p>
+            <p>{{student.exam_grade}} </p>
+            <p>{{student.gender}}</p>
+            {% if request.user == classroom.teacher %}
+              <a href="{% url 'student-update' student.pk %}" class="btn" style="background-color: #000034; color: white;">Update</a>
+              <a href="{% url 'student-delete' student.pk %}" class="btn" style="background-color: #FFA500; color: #000034;">Delete</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+</div> -->
 
 {% endblock content %}
